@@ -16,26 +16,37 @@ class TelaLogin extends StatefulWidget {
   _TelaLogin createState() => _TelaLogin();
 }
 
-class _TelaLogin extends State {
+class _TelaLogin extends State<TelaLogin> {
   GlobalKey<FormState> _chaveForm = new GlobalKey<FormState>();
 
   String? nameLogin = "";
   String? senha     = "";
+  var _mostraPrimeiro = true;
 
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.dark
+      ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Reserva de mesas CA"),
+          title: const Text("Reserva de mesas CA"),
         ),
         body: Container(
-          padding: EdgeInsets.all(50.0),
+          padding: const EdgeInsets.all(50.0),
           child: Form(
             key: this._chaveForm,
             child: Column(
               children: [
                 TextFormField(
                   keyboardType: TextInputType.name,
+                  onChanged: (String valor) {
+                    if (_chaveForm.currentState!.validate()) {
+                      setState(() {
+                        _mostraPrimeiro = false;
+                      });
+                    }
+                  },
                   validator: (String? valor) {
                     if (valor == null) {
                       return "Informe o usuário";
@@ -48,7 +59,7 @@ class _TelaLogin extends State {
                   onSaved: (String? valor) {
                     this.nameLogin = valor;
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Usuário do SIGAA",
                     labelText: "Usuário"
                   ),
@@ -56,6 +67,13 @@ class _TelaLogin extends State {
                 TextFormField(
                   obscureText: true,
                   keyboardType: TextInputType.name,
+                  onChanged: (String valor) {
+                    if (_chaveForm.currentState!.validate()) {
+                      setState(() {
+                        _mostraPrimeiro = false;
+                      });
+                    }
+                  },
                   validator: (String? valor) {
                     if (valor == null) {
                       return "Informe a sua senha";
@@ -68,22 +86,30 @@ class _TelaLogin extends State {
                   onSaved: (String? valor) {
                     this.senha = valor;
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Senha do SIGAA",
                     labelText: "Senha"
                   ),
                 ),
-                ElevatedButton(
-                  child: Text("Login"),
-                  onPressed: () {
-                    if (_chaveForm.currentState!.validate()) {
-                      _chaveForm.currentState!.save();
-                      Navigator.pushNamed(context, '/home');
+                AnimatedCrossFade(
+                  duration: const Duration(seconds: 1),
+                  crossFadeState: _mostraPrimeiro
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+                  firstChild:
+                    const Text('Informe os campos para prosseguir'),
+                  secondChild: ElevatedButton(
+                    child: const Text("Login"),
+                    onPressed: () {
+                      if (_chaveForm.currentState!.validate()) {
+                        _chaveForm.currentState!.save();
+                        Navigator.pushNamed(context, '/home');
+                      }
                     }
-                  }
-                )
-              ],
-            ),
+                  )
+                ),
+              ]
+            )
           ),
         ),
       ),
@@ -109,6 +135,9 @@ class _TelaHome extends State {
 
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.dark
+      ),
       home: Scaffold(
         appBar: AppBar(title: Text(_titulos[_paginaAtual])),
         body: IndexedStack(
@@ -120,11 +149,11 @@ class _TelaHome extends State {
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: [
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.info),
               label: 'Info'
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.add_box),
               label: 'Reservar'
             )
@@ -174,6 +203,8 @@ class _TelaHome extends State {
     );
   }
 
+  var _mostraPrimeiro = true;
+
   Widget FormReserva() {
     return Center(
       child: Form(
@@ -181,11 +212,11 @@ class _TelaHome extends State {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Divider(),
+            const Divider(),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Selecione o seu curso:'),
+                const Text('Selecione o seu curso:'),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -194,22 +225,32 @@ class _TelaHome extends State {
                       groupValue: _valorRadio,
                       onChanged: (int? valor) {
                           setState(() {
-                          _valorRadio = valor;
+                            _valorRadio = valor;
                           });
+                          if (_chaveFormReserva.currentState!.validate()) {
+                            setState(() {
+                              _mostraPrimeiro = false;
+                            });
+                          }
                       }
                     ),
-                    Text('Ciência da Computação'),
+                    const Text('Ciência da Computação'),
                     
                     Radio(
                       value: 2,
                       groupValue: _valorRadio,
                       onChanged: (int? valor) {
                           setState(() {
-                          _valorRadio = valor;
+                            _valorRadio = valor;
                           });
+                          if (_chaveFormReserva.currentState!.validate()) {
+                            setState(() {
+                              _mostraPrimeiro = false;
+                            });
+                          }
                       }
                     ),
-                    Text('Matemática'),
+                    const Text('Matemática'),
 
                     Radio(
                       value: 3,
@@ -218,9 +259,14 @@ class _TelaHome extends State {
                           setState(() {
                           _valorRadio = valor;
                           });
+                          if (_chaveFormReserva.currentState!.validate()) {
+                            setState(() {
+                              _mostraPrimeiro = false;
+                            });
+                          }
                       }
                     ),
-                    Text('Pedagogia')
+                    const Text('Pedagogia')
                   ]
                 )
               ]
@@ -236,11 +282,16 @@ class _TelaHome extends State {
                       groupValue: _valorRadio,
                       onChanged: (int? valor) {
                           setState(() {
-                          _valorRadio = valor;
+                            _valorRadio = valor;
                           });
+                          if (_chaveFormReserva.currentState!.validate()) {
+                            setState(() {
+                              _mostraPrimeiro = false;
+                            });
+                          }
                       }
                     ),
-                    Text('Física'),
+                    const Text('Física'),
 
                     Radio(
                       value: 5,
@@ -251,31 +302,38 @@ class _TelaHome extends State {
                           });
                       }
                     ),
-                    Text('Agronomia')
+                    const Text('Agronomia')
                   ]
                 )
               ]
             ),
-            Divider(),
+            const Divider(),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Data da reserva:'),
+                const Text('Data da reserva:'),
                 TextFormField(
                   keyboardType: TextInputType.datetime,
+                  onChanged: (value) {
+                    if (_chaveFormReserva.currentState!.validate()) {
+                      setState(() {
+                        _mostraPrimeiro = false;
+                      });
+                    }
+                  },
                   validator: (String? valor) {
                       if (valor == null) {
-                      return "Informe a data da reserva";
+                        return "Informe a data da reserva";
                       }
                       if (valor.isEmpty) {
-                      return "Informe a data da reserva";
+                        return "Informe a data da reserva";
                       }
                       return null;
                   },
                 )
               ],
             ),
-            Divider(),
+            const Divider(),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -287,8 +345,13 @@ class _TelaHome extends State {
                       value: _checkMesa1,
                       onChanged: (bool? valor) {
                           setState(() {
-                          _checkMesa1 = valor;
+                            _checkMesa1 = valor;
                           });
+                          if (_chaveFormReserva.currentState!.validate()) {
+                            setState(() {
+                              _mostraPrimeiro = false;
+                            });
+                          }
                       }
                     ),
                     Text('Mesa 1 - até 4 cadeiras'),
@@ -297,8 +360,13 @@ class _TelaHome extends State {
                       value: _checkMesa2,
                       onChanged: (bool? valor) {
                           setState(() {
-                          _checkMesa2 = valor;
+                            _checkMesa2 = valor;
                           });
+                          if (_chaveFormReserva.currentState!.validate()) {
+                            setState(() {
+                              _mostraPrimeiro = false;
+                            });
+                          }
                       }
                     ),
                     Text('Mesa 2 - até 4 cadeiras'),
@@ -307,8 +375,13 @@ class _TelaHome extends State {
                       value: _checkMesa3,
                       onChanged: (bool? valor) {
                           setState(() {
-                          _checkMesa3 = valor;
+                            _checkMesa3 = valor;
                           });
+                          if (_chaveFormReserva.currentState!.validate()) {
+                            setState(() {
+                              _mostraPrimeiro = false;
+                            });
+                          }
                       }
                     ),
                     Text('Mesa 3 - até 6 cadeiras e 1 PC'),
@@ -323,39 +396,53 @@ class _TelaHome extends State {
                 Text('Para quantas pessoas?'),
                 TextFormField(
                   keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    if (_chaveFormReserva.currentState!.validate()) {
+                      setState(() {
+                        _mostraPrimeiro = false;
+                      });
+                    }
+                  },
                   validator: (String? valor) {
                     if (valor == null) {
-                    return "Informe a quantidade de pessoas";
+                      return "Informe a quantidade de pessoas";
                     }
                     if (valor.isEmpty) {
-                    return "Informe a quantidade de pessoas";
+                      return "Informe a quantidade de pessoas";
                     }
                     return null;
                   }
                 ),
-                ElevatedButton(
-                  child: Text("Reservar"),
-                  onPressed: () {
-                    if (_chaveFormReserva.currentState!.validate()) {
-                      _chaveFormReserva.currentState!.save();
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext inContext) {
-                          return SimpleDialog(
-                            title: Text('Reserva realizada com sucesso!'),
-                            children: [
-                              SimpleDialogOption(
-                                onPressed: () {
-                                Navigator.pop(inContext);
-                                },
-                                child: Text('Ok'),
-                              )
-                            ],
-                          );
-                        }
-                      );
+                AnimatedCrossFade(
+                  duration: const Duration(seconds: 1),
+                  crossFadeState: _mostraPrimeiro
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+                  firstChild: const Text('Informe os campos acima.'),
+                  secondChild: ElevatedButton(
+                    child: const Text("Reservar"),
+                    onPressed: () {
+                      if (_chaveFormReserva.currentState!.validate()) {
+                        _chaveFormReserva.currentState!.save();
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext inContext) {
+                            return SimpleDialog(
+                              title: const Text('Reserva realizada com sucesso!'),
+                              children: [
+                                SimpleDialogOption(
+                                  onPressed: () {
+                                  Navigator.pop(inContext);
+                                  },
+                                  child: const Text('Ok'),
+                                )
+                              ],
+                            );
+                          }
+                        );
+                      }
                     }
-                  }
+                  )
                 )
               ]
             ),
