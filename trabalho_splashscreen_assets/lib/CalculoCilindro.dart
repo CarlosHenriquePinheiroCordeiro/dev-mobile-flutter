@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CalculoCilindro extends StatefulWidget {
-  CalculoCilindro({Key? key}) : super(key:key);
   _CalculoCilindro createState() => _CalculoCilindro();
 }
 
 class _CalculoCilindro extends State {
-  GlobalKey<FormState> _chaveFormCilindro = new GlobalKey<FormState>();
   var _iRaio        = 0.0;
   var _iAltura      = 0.0;
   var _iAreaBase    = 0.0;
@@ -30,31 +28,46 @@ class _CalculoCilindro extends State {
         brightness: Brightness.dark
       ),
       home: Scaffold(
-        appBar: AppBar(title: Text('Cilindro')),
+        appBar: AppBar(title: const Text('Cilindro')),
         body: Column(
           children: <Widget>[
+            const Divider(),
+            Image.asset("assets/img/cilindro.png"),
+            const Divider(),
             TextFormField(
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               decoration: const InputDecoration(labelText: 'Raio (m)'),
               onChanged: (value) {
-                setState(() {
-                  _iRaio = double.parse(value);
-                  realizaCalculos();
-                });
+                if (value.isNotEmpty) {
+                  value.replaceAll(',', '.');
+                  setState(() {
+                    _iRaio = double.parse(value);
+                    realizaCalculos();
+                  });
+                }
               }
             ),
             TextFormField(
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               decoration: const InputDecoration(labelText: 'Altura (m)'),
               onChanged: (value) {
-                setState(() {
-                  _iAltura = double.parse(value);
-                  realizaCalculos();
-                });
+                if (value.isNotEmpty) {
+                  value.replaceAll(',', '.');
+                  setState(() {
+                    _iAltura = double.parse(value);
+                    realizaCalculos();
+                  });
+                }
               }
             ),
-            Divider(),
-            Text('Área da Base: ${_iAreaBase}')
+            const Divider(),
+            Text('Área da Base: ${_iAreaBase}m'),
+            const Divider(),
+            Text('Área Lateral: ${_iAreaLateral}m'),
+            const Divider(),
+            Text('Área Total: ${_iAreaTotal}m'),
+            const Divider(),
+            Text('Volume: ${_iVolume} metros cúbicos'),
           ],
         )
       )

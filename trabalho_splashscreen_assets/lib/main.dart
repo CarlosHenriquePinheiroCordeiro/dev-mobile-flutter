@@ -41,7 +41,7 @@ class Home extends StatelessWidget {
             ),
             ListTile(
               leading: Image.asset("assets/img/piramide.png"),
-              title: const Text('Pirâmide'),
+              title: const Text('Pirâmide Quadrangular'),
               onTap: () => Navigator.pushNamed(context, '/piramide')
             ),
             ListTile(),
