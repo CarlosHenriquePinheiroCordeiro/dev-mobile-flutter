@@ -10,12 +10,13 @@ class ControllerLocalizacao extends Controller
     
     public function index()
     {
-        $aDados = Localizacao::all();
-        $aJson = [];
-        foreach (Localizacao::all() as $oModel) {
-            $aJson[] = [$oModel->id, $oModel->nome, $oModel->coordenadas];
-        }
-        return json_encode($aJson);
+        $response = response()->json(Localizacao::all());
+
+        $response->header('Access-Control-Allow-Origin', '*');
+        $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        $response->header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With, X-Token-Auth, Origin');
+
+        return $response;
     }
 
     public function store(Request $request)

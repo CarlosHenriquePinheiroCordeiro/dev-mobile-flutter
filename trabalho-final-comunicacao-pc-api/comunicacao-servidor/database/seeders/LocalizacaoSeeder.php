@@ -17,7 +17,7 @@ class LocalizacaoSeeder extends Seeder
             ['nome' => 'Ituporanga'   , 'coordenadas' => '-27.4215239,-49.6152393'],
             ['nome' => 'Rio do Sul'   , 'coordenadas' => '-27.2057479,-49.6645014'],
             ['nome' => 'Aurora'       , 'coordenadas' => '-27.3094063,-49.6468021'],
-            ['nome' => 'Florianópolis', 'coordenadas' => '-27.570596,-48.8006068']
+            ['nome' => 'Florianópolis', 'coordenadas' => '-27.570596,-48.8006068' ]
         ];
         foreach ($aDados as $aRegistro) {
             DB::table('localizacaos')->insert($aRegistro);
