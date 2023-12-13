@@ -51,10 +51,10 @@ class _TemperaturaLocalizacaoState extends State<TemperaturaLocalizacao> {
               icon = Icons.wb_cloudy;
             }
 
-            final sDataFormatada = DateFormat('dd/MM/yyyy, HH\'h\'').format(sTimestamp);
+            final sDataFormatada = DateFormat('HH\'h\'').format(sTimestamp);
             final oTile = ListTile(
               leading: Icon(icon),
-              title: Text('$sDataFormatada - $sTemperatura °C'),
+              title: Text('$sDataFormatada: $sTemperatura °C'),
             );
 
             if (sTimestamp.isBefore(oAgora)) {
