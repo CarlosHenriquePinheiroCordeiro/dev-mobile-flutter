@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class TemperaturaLocalizacao extends StatefulWidget {
   final String nome;
@@ -13,36 +14,70 @@ class TemperaturaLocalizacao extends StatefulWidget {
 }
 
 class _TemperaturaLocalizacaoState extends State<TemperaturaLocalizacao> {
-  late List<String> temperaturas;
+  late List<Widget> aTemperaturas;
 
   @override
   void initState() {
     super.initState();
-    temperaturas = [];
+    aTemperaturas = [];
     _fetchTemperaturas();
   }
 
   Future<void> _fetchTemperaturas() async {
     try {
-      final response = await http.get(
+      final oResposta = await http.get(
         Uri.parse(
           'https://api.tomorrow.io/v4/timelines?location=${widget.coordenadas}&fields=temperature&timesteps=1h&units=metric&apikey=DgIMoLug9D6L7NaP6AoFQBjlDyvKlpir',
         ),
       );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final intervals = data['data']['timelines'][0]['intervals'] as List<dynamic>;
+      if (oResposta.statusCode == 200) {
+        final aDados      = json.decode(oResposta.body);
+        final aIntervalos = aDados['data']['timelines'][0]['intervals'] as List<dynamic>;
+        final oAgora      = DateTime.now();
+        final oAmanha     = DateTime.now().add(Duration(days: 1));
 
         setState(() {
-          temperaturas = intervals.map((interval) {
-            final temperature = interval['values']['temperature'].toString();
-            final timestamp = interval['startTime'];
-            return 'Hora: $timestamp, Temperatura: $temperature °C';
-          }).toList();
+          var aHoje   = <Widget>[];
+          var aAmanha = <Widget>[];
+
+          for (var aIntervalo in aIntervalos) {
+            final sTimestamp = DateTime.parse(aIntervalo['startTime']).toLocal();
+            final sTemperatura = double.parse(aIntervalo['values']['temperature'].toString());
+            IconData icon = Icons.wb_sunny;
+            if (sTemperatura <= 10) {
+              icon = Icons.ac_unit;
+            }
+            if (sTemperatura <= 20) {
+              icon = Icons.wb_cloudy;
+            }
+
+            final sDataFormatada = DateFormat('dd/MM/yyyy, HH\'h\'').format(sTimestamp);
+            final oTile = ListTile(
+              leading: Icon(icon),
+              title: Text('$sDataFormatada - $sTemperatura °C'),
+            );
+
+            if (sTimestamp.isBefore(oAgora)) {
+              aHoje.add(oTile);
+            } else if (sTimestamp.isBefore(oAmanha)) {
+              aAmanha.add(oTile);
+            }
+          }
+
+          if (aHoje.isNotEmpty && aAmanha.isNotEmpty) {
+            aTemperaturas = [
+              Text('Hoje', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ...aHoje,
+              Divider(),
+              Text('Amanhã', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ...aAmanha,
+            ];
+          } else {
+            aTemperaturas = [...aHoje, ...aAmanha];
+          }
         });
       } else {
-        print('Erro na requisição: ${response.statusCode}');
+        print('Erro na requisição: ${oResposta.statusCode}');
       }
     } catch (e) {
       print('Erro: $e');
@@ -56,21 +91,8 @@ class _TemperaturaLocalizacaoState extends State<TemperaturaLocalizacao> {
         title: Text('Temperaturas previstas para ${widget.nome}'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (temperaturas != null)
-              Expanded(
-                child: ListView.builder(
-                  itemCount: temperaturas.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(temperaturas[index]),
-                    );
-                  },
-                ),
-              ),
-          ],
+        child: ListView(
+          children: aTemperaturas,
         ),
       ),
     );

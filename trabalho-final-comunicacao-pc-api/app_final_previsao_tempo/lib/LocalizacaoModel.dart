@@ -5,11 +5,11 @@ class LocalizacaoModel {
 
   LocalizacaoModel({required this.id, required this.nome, required this.coordenadas});
 
-  factory LocalizacaoModel.fromJson(Map<String, dynamic> json) {
+  factory LocalizacaoModel.fromJson(Map<String, dynamic> aJson) {
     return LocalizacaoModel(
-      id: json['id'] as int,
-      nome: json['nome'] as String,
-      coordenadas: json['coordenadas'] as String,
+      id: aJson['id'] as int,
+      nome: aJson['nome'] as String,
+      coordenadas: aJson['coordenadas'] as String,
     );
   }
 }

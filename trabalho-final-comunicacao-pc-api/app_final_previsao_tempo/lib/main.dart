@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:app_final_previsao_tempo/LocalizacaoModel.dart';
 import 'package:app_final_previsao_tempo/TelaPrincipal.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'FuncoesLocalizacao.dart';
 
 void main() {
   runApp(AppTemperatura());
@@ -11,14 +9,15 @@ void main() {
 
 class AppTemperatura extends StatelessWidget {
   @override
+  FuncoesLocalizacao oFc = FuncoesLocalizacao();
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sua Aplicação',
+      title: 'Previsão Temperaturas',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: FutureBuilder(
-        future: fetchData(),
+        future: oFc.getLocalizacoes(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
@@ -40,16 +39,5 @@ class AppTemperatura extends StatelessWidget {
     );
   }
 
-  Future<List<LocalizacaoModel>> fetchData() async {
-    // Sua lógica para fazer a requisição HTTP e obter dados
-    final response = await http.get(Uri.parse('http://127.0.0.1:8000/localizacao'));
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonData = json.decode(response.body);
-      List<LocalizacaoModel> localizacoes = jsonData.map((data) => LocalizacaoModel.fromJson(data)).toList();
-      return localizacoes;
-    } else {
-      throw Exception('Falha na requisição');
-    }
-  }
 }
